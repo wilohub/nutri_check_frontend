@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Tu IP local fija de la red actual y el puerto de NestJS
-// const API_URL = 'http://192.168.180.115:3000/api/v1';
-const API_URL = "http://192.168.151.247:3000/api/v1";
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,

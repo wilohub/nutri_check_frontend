@@ -1,8 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
-import ScanScreen from "../screens/ScanScreen"; // <-- Importamos tu nueva pantalla real
+
+import ScanScreen from "../screens/ScanScreen";
 import ReportScreen from "../screens/ReportScreen";
 
 function HistoryScreenMock() {
@@ -14,6 +16,17 @@ function HistoryScreenMock() {
 }
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+// Stack principal de la pestaña de Escáner
+function ScanStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ScanMain" component={ScanScreen} />
+      <Stack.Screen name="Report" component={ReportScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function AppNavigator() {
   return (
@@ -35,7 +48,7 @@ export default function AppNavigator() {
       >
         <Tab.Screen
           name="Escáner"
-          component={ScanScreen} // <-- Enlazamos el Escáner Real con la Cámara
+          component={ScanStack}
           options={{
             tabBarLabel: "Escanear",
             tabBarIcon: () => <Text>🔍</Text>,

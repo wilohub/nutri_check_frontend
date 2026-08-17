@@ -9,11 +9,13 @@ import {
   Alert,
 } from "react-native";
 import { CameraView, Camera, BarcodeScanningResult } from "expo-camera";
+import { useNavigation } from "@react-navigation/native"; // <-- AGREGADO
 import { productService } from "../services/api";
 
 const { width } = Dimensions.get("window");
 
 export default function ScanScreen() {
+  const navigation = useNavigation<any>(); // <-- AGREGADO
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,50 +29,45 @@ export default function ScanScreen() {
     getCameraPermissions();
   }, []);
 
-  // Lógica de cascada inteligente conectada a NestJS
   const handleBarcodeScanned = async (result: BarcodeScanningResult) => {
     setScanned(true);
     setLoading(true);
 
     try {
       setLoadingMessage("Buscando en DB Local...");
-      console.log(`Paso 1: Buscando ${result.data} en DB Local...`);
       const localResponse = await productService.scanProductLocal(result.data);
 
-      // Si existe localmente, el backend devuelve { source: 'local', data: { ... } }
-      Alert.alert(
-        "¡Producto Encontrado Local!",
-        `Nombre: ${localResponse.data.name}\nOrigen: Base de datos Nutri-Check`,
-      );
-      // TODO: Aquí navegaremos a la pantalla de Reporte con el Semáforo
-      // navigation.navigate('Report', { product: localResponse.data });
+      // Redirigir a ReportScreen con los datos locales
+      navigation.navigate("Report", {
+        product: localResponse.data,
+        source: "local",
+      });
+
     } catch (localError: any) {
-      // Si dio 404 (No encontrado local), pasamos automáticamente a Open Food Facts
-      console.log(
-        `Paso 2: No está local. Buscando ${result.data} en Open Food Facts...`,
-      );
       setLoadingMessage("Buscando en OFF...");
 
       try {
         const offResponse = await productService.scanProductOFF(result.data);
 
-        Alert.alert(
-          "¡Encontrado en Open Food Facts!",
-          `Nombre: ${offResponse.product_name || offResponse.name || "Alimento registrado"}\nOrigen: API Externa`,
-        );
-        // TODO: Aquí navegaremos a la pantalla de Reporte mapeando los datos de OFF
-        // navigation.navigate('Report', { product: offResponse });
+        // Redirigir a ReportScreen con los datos de OFF
+        navigation.navigate("Report", {
+          product: offResponse,
+          source: "off",
+        });
+
       } catch (offError: any) {
-        // Si tampoco está en OFF, se activa el flujo OCR
-        console.log(
-          "Paso 3: No existe en ningún lado. Cambiando a Modo OCR...",
-        );
         Alert.alert(
           "Producto no registrado",
-          "Este alimento no existe en nuestros servidores ni en la red internacional.\n\nIniciando Asistente OCR para escanear tabla nutricional...",
+          "Este alimento no existe en nuestros servidores ni en la red internacional.\n\nIniciando Asistente OCR...",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                // Pronto redirigiremos a OcrScreen
+              },
+            },
+          ]
         );
-        // TODO: Aquí navegaremos al Wizard de OCR
-        // navigation.navigate('OcrWizard', { barcode: result.data });
       }
     } finally {
       setLoading(false);
@@ -85,6 +82,7 @@ export default function ScanScreen() {
       </View>
     );
   }
+
   if (hasPermission === false) {
     return (
       <View style={styles.center}>
