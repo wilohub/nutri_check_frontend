@@ -12,6 +12,7 @@ export function useReportScreen() {
 
   // Mapeo defensivo
   const name = product?.name || product?.product_name || "Producto Desconocido";
+  console.log("Nombre del producto " + name);
   const brand = product?.brand || product?.brands || "Marca no especificada";
   const imageUrl =
     product?.imageUrl || product?.image_front_url || product?.image_url;
