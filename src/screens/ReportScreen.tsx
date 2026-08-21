@@ -16,6 +16,9 @@ export default function ReportScreen() {
   const name = product?.name || product?.product_name || 'Producto Desconocido';
   const brand = product?.brand || product?.brands || 'Marca no especificada';
   const imageUrl = product?.imageUrl || product?.image_front_url || product?.image_url;
+  const cantidadData = product?.quantityData || product?.quantityData || {};
+  const cantidad = cantidadData?.display
+
   
   const quantityNum = product?.quantityNum || product?.product_quantity || 0;
   const quantityUnit = (product?.quantityUnit || product?.product_quantity_unit || 'g').toLowerCase();
@@ -77,8 +80,10 @@ export default function ReportScreen() {
             </View>
           )}
           <View style={styles.productInfo}>
-            <Text style={styles.productTitle}>{name}</Text>
-            <Text style={styles.productBrand}>Marca: {brand}</Text>
+            {/* <Text style={styles.productTitle}>{name}</Text> */}
+            {/* <Text style={styles.productBrand}>Marca: {brand}</Text> */}
+            <Text style={styles.productBrand}>Cantidad: {cantidad}</Text>
+
             {quantityNum > 0 && (
               <Text style={styles.productQuantity}>
                 Contenido: {quantityNum} {quantityUnit}
@@ -89,7 +94,7 @@ export default function ReportScreen() {
       </View>
 
       {/* Evaluación por Semáforo con Gramos */}
-      <Text style={styles.sectionTitle}>Evaluación por Semáforo</Text>
+      {/* <Text style={styles.sectionTitle}>Evaluación por Semáforo</Text> */}
       <View style={styles.semaphoreContainer}>
         <View style={styles.nutrientCard}>
           <Text style={styles.nutrientLabel}>Azúcares</Text>

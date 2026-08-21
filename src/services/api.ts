@@ -18,9 +18,11 @@ export const productService = {
   scanProductLocal: async (barcode: string) => {
     try {
       const cleanBarcode = barcode.trim();
+      console.log(`barcode: ${cleanBarcode}`)
       const response = await api.get(`/products/scan/${cleanBarcode}`);
       return response.data;
     } catch (error: any) {
+      console.error("Error " + error.message)
       if (error.response) throw error.response.data;
       throw new Error("Error al conectar con la DB Local");
     }

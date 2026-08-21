@@ -8,12 +8,20 @@ export function useReportScreen() {
   const [showFatDetails, setShowFatDetails] = useState(false);
   const [showSaltDetails, setShowSaltDetails] = useState(false);
 
+  console.log("Params recibicos en repostScreen", JSON.stringify(route.params, null, 2))
+
   const { product, source } = route.params || {};
 
   // Mapeo defensivo
   const name = product?.name || product?.product_name || "Producto Desconocido";
   console.log("Nombre del producto " + name);
+
   const brand = product?.brand || product?.brands || "Marca no especificada";
+  const cantidadProduct = product?.quantityData || product?.quantityData || {};
+  const cantidad = cantidadProduct.display;
+
+  console.log("cantidad: " + cantidad )
+
   const imageUrl =
     product?.imageUrl || product?.image_front_url || product?.image_url;
 
@@ -27,29 +35,19 @@ export function useReportScreen() {
 
   // Obtención de valores nutricionales
   const nutriments = product?.nutriments || product?.nutritionalData || {};
-  const sugars100 =
-    product?.nutrients?.sugars100 ??
-    nutriments["sugars_100g"] ??
-    nutriments?.sugars100g ??
-    0;
-  const fat100 =
-    product?.nutrients?.fat100 ??
-    nutriments["fat_100g"] ??
-    nutriments?.totalFat100g ??
-    0;
-  const satFat100 =
-    product?.nutrients?.satFat100 ??
-    nutriments["saturated-fat_100g"] ??
-    nutriments?.saturatedFat100g ??
-    0;
-  const sodium100 =
-    product?.nutrients?.sodium100 ??
-    nutriments["salt_100g"] ??
-    nutriments?.salt100g ??
-    0;
+  // console.log("Azucar " + nutriments.sugars)
+
+  const sugars100 = nutriments.sugars ??  0;
+  
+  const fat100 =  nutriments?.totalFat ?? 0;
+  
+  const satFat100 = nutriments?.saturatedFat ?? 0;
+
+  const sodium100 = nutriments?.sodium ??  0;
 
   // Semáforo
-  const levels = product?.nutrient_levels || {};
+  const levels = product?.nutrientLevels || {};
+  console.log("level: " + levels.fat)
   const sugarLevel = (
     product?.trafficLight?.sugar ||
     levels["sugars"] ||
@@ -58,7 +56,7 @@ export function useReportScreen() {
   ).toUpperCase();
   const fatLevel = (
     product?.trafficLight?.satFat ||
-    levels["saturated-fat"] ||
+    levels["saturatedFat"] ||
     nutriments?.trafficLightSaturatedFat ||
     "BAJO"
   ).toUpperCase();
@@ -100,6 +98,7 @@ export function useReportScreen() {
     source,
     name,
     brand,
+    cantidad,
     imageUrl,
     quantityNum,
     quantityUnit,

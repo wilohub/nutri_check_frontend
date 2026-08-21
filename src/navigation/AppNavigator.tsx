@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 
 import ScanScreen from "../screens/ScanScreen";
+// import ReportScreen from "../screens/reportScreen/ReportScreen";
 import ReportScreen from "../screens/reportScreen/ReportScreen";
 
 function HistoryScreenMock() {

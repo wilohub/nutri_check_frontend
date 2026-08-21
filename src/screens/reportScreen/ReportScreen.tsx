@@ -8,6 +8,7 @@ export default function ReportScreen() {
     source,
     name,
     brand,
+    cantidad,
     imageUrl,
     quantityNum,
     quantityUnit,
@@ -54,6 +55,7 @@ export default function ReportScreen() {
           <View style={styles.productInfo}>
             <Text style={styles.productTitle}>{name}</Text>
             <Text style={styles.productBrand}>Marca: {brand}</Text>
+            <Text style={styles.productBrand}>Cantidad: {cantidad}</Text>            
             {quantityNum > 0 && (
               <Text style={styles.productQuantity}>
                 Contenido: {quantityNum} {quantityUnit}
