@@ -15,7 +15,7 @@ export default function ReportScreen() {
     sugars100,
     fat100,
     satFat100,
-    sodium100,
+    salt100,
     sugarLevel,
     fatLevel,
     sodiumLevel,
@@ -115,7 +115,7 @@ export default function ReportScreen() {
         <View style={styles.nutrientCard}>
           <Text style={styles.nutrientLabel}>Sodio/Sal</Text>
           <Text style={styles.gramText}>
-            {sodium100}g / 100{quantityUnit}
+            {salt100}g / 100{quantityUnit}
           </Text>
           <View
             style={[
@@ -139,20 +139,23 @@ export default function ReportScreen() {
       <View style={styles.educationalCard}>
         <Text style={styles.educationalTitle}>💡 Equivalencia en Azúcar</Text>
         <Text style={styles.educationalText}>
-          Por cada <Text style={{ fontWeight: "700" }}>{portionLabel}</Text>,
-          este producto contiene aprox.{" "}
-          <Text style={{ fontWeight: "700", color: "#FF3B30" }}>
-            {sugarPerPortion} g de azúcar
-          </Text>
-          .
+          Por cada <Text style={{ fontWeight: "700" }}>{sugars100 + "g"}</Text>,
+          de azúcar.
         </Text>
+         {/* <Text style={styles.educationalText}>
+          Por cada <Text style={{ fontWeight: "700" }}>{portionLabel}</Text>,
+          de {name} contiene aprox.{" "}
+          <Text style={{ fontWeight: "700", color: "#FF3B30" }}>
+            {sugarPerPortion} g de azúcar.
+          </Text>
+        </Text> */}
         <View style={styles.spoonRow}>
           <Text style={styles.spoonText}>
             Equivale a:{" "}
             {teaspoons > 0
               ? "🥄 ".repeat(Math.min(teaspoons, 8))
               : "0 cucharaditas"}{" "}
-            ({teaspoons} tsp)
+            ({teaspoons} tbsp)
           </Text>
         </View>
       </View>

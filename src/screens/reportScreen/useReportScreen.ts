@@ -8,18 +8,18 @@ export function useReportScreen() {
   const [showFatDetails, setShowFatDetails] = useState(false);
   const [showSaltDetails, setShowSaltDetails] = useState(false);
 
-  console.log("Params recibicos en repostScreen", JSON.stringify(route.params, null, 2))
+  // console.log("Params recibicos en repostScreen", JSON.stringify(route.params, null, 2))
 
   const { product, source } = route.params || {};
 
   // Mapeo defensivo
   const name = product?.name || product?.product_name || "Producto Desconocido";
-  console.log("Nombre del producto " + name);
+  console.log("Nombre del producto: " + name);
 
   const brand = product?.brand || product?.brands || "Marca no especificada";
   const cantidadProduct = product?.quantityData || product?.quantityData || {};
-  const cantidad = cantidadProduct.display;
 
+  const cantidad = cantidadProduct.display;
   console.log("cantidad: " + cantidad )
 
   const imageUrl =
@@ -34,16 +34,16 @@ export function useReportScreen() {
   const isLiquid = quantityUnit === "ml";
 
   // Obtención de valores nutricionales
-  const nutriments = product?.nutriments || product?.nutritionalData || {};
-  // console.log("Azucar " + nutriments.sugars)
+  const nutriments = product?.nutritionalData || {};
+  console.log("Azucar " + nutriments?.sugars.value)
+  console.log("GrasasTotales " + nutriments?.totalFat.value)
+  console.log("GrasasSaturadas " + nutriments?.saturatedFat.value)
+  console.log("sal " + nutriments.salt.value)
 
-  const sugars100 = nutriments.sugars ??  0;
-  
-  const fat100 =  nutriments?.totalFat ?? 0;
-  
-  const satFat100 = nutriments?.saturatedFat ?? 0;
-
-  const sodium100 = nutriments?.sodium ??  0;
+  const sugars100 = nutriments?.sugars.value ??  0;  
+  const fat100 =  nutriments?.totalFat.value ?? 0;  
+  const satFat100 = nutriments?.saturatedFat.value ?? 0;
+  const salt100 = nutriments?.salt.value ??  0;
 
   // Semáforo
   const levels = product?.nutrientLevels || {};
@@ -69,9 +69,9 @@ export function useReportScreen() {
 
   // Cálculos de porción y cucharaditas
   const portionSize = isLiquid ? 200 : 15;
-  const portionLabel = isLiquid ? "1 vaso (200 ml)" : "1 cucharada (15 g)";
+  const portionLabel = isLiquid ? "vaso (200 ml)" : "cucharada (15 g)";
   const sugarPerPortion = ((sugars100 * portionSize) / 100).toFixed(1);
-  const teaspoons = Math.round(Number(sugarPerPortion) / 4);
+  const teaspoons = Math.round(Number(sugars100) / 15);
 
   const getBadgeColor = (level: string) => {
     switch (level) {
@@ -105,7 +105,7 @@ export function useReportScreen() {
     sugars100,
     fat100,
     satFat100,
-    sodium100,
+    salt100,
     sugarLevel,
     fatLevel,
     sodiumLevel,
