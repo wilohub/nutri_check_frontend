@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useRoute, useNavigation } from "@react-navigation/native";
-
-import { calculatePortionData } from "../../utils/portionUtils";
+import { useState } from 'react';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { calculatePortionData } from '../../utils/portionUtils';
 
 export function useReportScreen() {
   const route = useRoute<any>();
@@ -21,45 +20,29 @@ export function useReportScreen() {
   // Información básica del producto
   // ---------------------------------------------------------
 
-  const name =
-    product?.name ||
-    product?.product_name ||
-    "Producto Desconocido";
-
-  console.log("Nombre del producto: " + name);
-
-  const brand =
-    product?.brand ||
-    product?.brands ||
-    "Marca no especificada";
+  const name = product?.name || product?.product_name || 'Producto Desconocido';
+  console.log('Nombre del producto: ' + name);
+  const brand = product?.brand || product?.brands || 'Marca no especificada';
 
   // ---------------------------------------------------------
   // Cantidad total del producto
   // ---------------------------------------------------------
 
   const cantidadProduct = product?.quantityData || {};
-
-  const cantidad = cantidadProduct.display || "";
-
-  console.log("Cantidad: " + cantidad);
+  const cantidad = cantidadProduct.display || '';
+  console.log('Cantidad: ' + cantidad);
 
   // ---------------------------------------------------------
   // Imagen
   // ---------------------------------------------------------
 
-  const imageUrl =
-    product?.imageUrl ||
-    product?.image_front_url ||
-    product?.image_url;
+  const imageUrl = product?.imageUrl || product?.image_front_url || product?.image_url;
 
   // ---------------------------------------------------------
   // Cantidad numérica y unidad del producto
   // ---------------------------------------------------------
 
-  const quantityNum =
-    product?.quantityNum ||
-    product?.product_quantity ||
-    0;
+  const quantityNum = product?.quantityNum || product?.product_quantity || 0;
 
   /**
    * IMPORTANTE:
@@ -70,12 +53,9 @@ export function useReportScreen() {
    * quantityUnit representa la unidad utilizada para los
    * valores nutricionales por 100 g / 100 ml.
    */
-  const quantityUnit = (
-    product?.quantityData?.unit ||
-    "g"
-  ).toLowerCase();
+  const quantityUnit = (product?.quantityData?.unit || 'g').toLowerCase();
 
-  console.log("quantityUnit = " + quantityUnit);
+  console.log('quantityUnit = ' + quantityUnit);
 
   // ---------------------------------------------------------
   // Valores nutricionales
@@ -83,27 +63,17 @@ export function useReportScreen() {
 
   const nutriments = product?.nutritionalData || {};
 
-  console.log(
-    "Azucar " + (nutriments?.sugars?.value ?? 0)
-  );
+  console.log('Azucar ' + (nutriments?.sugars?.value ?? 0));
 
-  console.log(
-    "GrasasTotales " + (nutriments?.totalFat?.value ?? 0)
-  );
+  console.log('GrasasTotales ' + (nutriments?.totalFat?.value ?? 0));
 
-  console.log(
-    "GrasasSaturadas " +
-      (nutriments?.saturatedFat?.value ?? 0)
-  );
+  console.log('GrasasSaturadas ' + (nutriments?.saturatedFat?.value ?? 0));
 
-  console.log(
-    "Sal " + (nutriments?.salt?.value ?? 0)
-  );
+  console.log('Sal ' + (nutriments?.salt?.value ?? 0));
 
   const sugars100 = nutriments?.sugars?.value ?? 0;
   const fat100 = nutriments?.totalFat?.value ?? 0;
-  const satFat100 =
-    nutriments?.saturatedFat?.value ?? 0;
+  const satFat100 = nutriments?.saturatedFat?.value ?? 0;
   const salt100 = nutriments?.salt?.value ?? 0;
 
   // ---------------------------------------------------------
@@ -112,27 +82,27 @@ export function useReportScreen() {
 
   const levels = product?.nutrientLevels || {};
 
-  console.log("level: " + levels.fat);
+  console.log('level: ' + levels.fat);
 
   const sugarLevel = (
     product?.trafficLight?.sugar ||
-    levels["sugars"] ||
+    levels['sugars'] ||
     nutriments?.trafficLightSugar ||
-    "BAJO"
+    'BAJO'
   ).toUpperCase();
 
   const fatLevel = (
     product?.trafficLight?.satFat ||
-    levels["saturatedFat"] ||
+    levels['saturatedFat'] ||
     nutriments?.trafficLightSaturatedFat ||
-    "BAJO"
+    'BAJO'
   ).toUpperCase();
 
   const sodiumLevel = (
     product?.trafficLight?.sodium ||
-    levels["salt"] ||
+    levels['salt'] ||
     nutriments?.trafficLightSodium ||
-    "BAJO"
+    'BAJO'
   ).toUpperCase();
 
   // ---------------------------------------------------------
@@ -166,10 +136,7 @@ export function useReportScreen() {
    * no se inventa ninguna porción.
    */
 
-  const portionData = calculatePortionData(
-    product?.servingQuantityData,
-    sugars100
-  );
+  const portionData = calculatePortionData(product?.servingQuantityData, sugars100);
 
   const {
     servingDisplay,
@@ -180,32 +147,13 @@ export function useReportScreen() {
     teaspoons,
   } = portionData;
 
-  console.log(
-    "Serving display: " + servingDisplay
-  );
+  console.log('Serving display: ' + servingDisplay);
+  console.log('Serving value: ' + servingValue);
 
-  console.log(
-    "Serving value: " + servingValue
-  );
-
-  console.log(
-    "Serving unit: " + servingUnit
-  );
-
-  console.log(
-    "Tiene información de porción: " +
-      hasServingInformation
-  );
-
-  console.log(
-    "Azúcar por porción: " +
-      sugarPerPortion
-  );
-
-  console.log(
-    "Cucharaditas: " +
-      teaspoons
-  );
+  console.log('Serving unit: ' + servingUnit);
+  console.log('Tiene información de porción: ' + hasServingInformation);
+  console.log('Azúcar por porción: ' + sugarPerPortion);
+  console.log('Cucharaditas: ' + teaspoons);
 
   // ---------------------------------------------------------
   // Funciones auxiliares
@@ -213,43 +161,38 @@ export function useReportScreen() {
 
   const getBadgeColor = (level: string) => {
     switch (level) {
-      case "HIGH":
-      case "ALTO":
+      case 'HIGH':
+      case 'ALTO':
         return {
-          bg: "#FF3B30",
-          text: "#FFFFFF",
+          bg: '#FF3B30',
+          text: '#FFFFFF',
         };
 
-      case "MODERATE":
-      case "MEDIO":
+      case 'MODERATE':
+      case 'MEDIO':
         return {
-          bg: "#FFCC00",
-          text: "#000000",
+          bg: '#FFCC00',
+          text: '#000000',
         };
 
-      case "LOW":
-      case "BAJO":
+      case 'LOW':
+      case 'BAJO':
       default:
         return {
-          bg: "#34C759",
-          text: "#FFFFFF",
+          bg: '#34C759',
+          text: '#FFFFFF',
         };
     }
   };
 
   const translateLevel = (level: string) => {
-    if (level === "HIGH" || level === "ALTO") {
-      return "ALTO";
+    if (level === 'HIGH' || level === 'ALTO') {
+      return 'ALTO';
     }
-
-    if (
-      level === "MODERATE" ||
-      level === "MEDIO"
-    ) {
-      return "MEDIO";
+    if (level === 'MODERATE' || level === 'MEDIO') {
+      return 'MEDIO';
     }
-
-    return "BAJO";
+    return 'BAJO';
   };
 
   // ---------------------------------------------------------
