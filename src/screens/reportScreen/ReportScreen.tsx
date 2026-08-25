@@ -5,31 +5,34 @@ import { styles } from "./ReportScreen.styles";
 
 export default function ReportScreen() {
   const {
-    source,
-    name,
-    brand,
-    cantidad,
-    imageUrl,
-    quantityNum,
-    quantityUnit,
-    sugars100,
-    fat100,
-    satFat100,
-    salt100,
-    sugarLevel,
-    fatLevel,
-    sodiumLevel,
-    portionLabel,
-    sugarPerPortion,
-    teaspoons,
-    showFatDetails,
-    setShowFatDetails,
-    showSaltDetails,
-    setShowSaltDetails,
-    getBadgeColor,
-    translateLevel,
-    goBack,
-  } = useReportScreen();
+  source,
+  name,
+  brand,
+  cantidad,
+  imageUrl,
+  quantityNum,
+  quantityUnit,
+  sugars100,
+  fat100,
+  satFat100,
+  salt100,
+  sugarLevel,
+  fatLevel,
+  sodiumLevel,
+  servingDisplay,
+  servingValue,
+  servingUnit,
+  hasServingInformation,
+  sugarPerPortion,
+  teaspoons,
+  showFatDetails,
+  setShowFatDetails,
+  showSaltDetails,
+  setShowSaltDetails,
+  getBadgeColor,
+  translateLevel,
+  goBack,
+} = useReportScreen();
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -136,29 +139,47 @@ export default function ReportScreen() {
       </View>
 
       {/* Equivalencia Pedagógica de Azúcar */}
-      <View style={styles.educationalCard}>
-        <Text style={styles.educationalTitle}>💡 Equivalencia en Azúcar</Text>
-        <Text style={styles.educationalText}>
-          Por cada <Text style={{ fontWeight: "700" }}>{sugars100 + "g"}</Text>,
-          de azúcar.
+     <View style={styles.educationalCard}>
+  <Text style={styles.educationalTitle}>
+    💡 Equivalencia en Azúcar
+  </Text>
+
+  {hasServingInformation ? (
+    <>
+      <Text style={styles.educationalText}>
+        Por cada{" "}
+        <Text style={{ fontWeight: "700" }}>
+          {servingDisplay}
         </Text>
-         {/* <Text style={styles.educationalText}>
-          Por cada <Text style={{ fontWeight: "700" }}>{portionLabel}</Text>,
-          de {name} contiene aprox.{" "}
-          <Text style={{ fontWeight: "700", color: "#FF3B30" }}>
-            {sugarPerPortion} g de azúcar.
-          </Text>
-        </Text> */}
-        <View style={styles.spoonRow}>
-          <Text style={styles.spoonText}>
-            Equivale a:{" "}
-            {teaspoons > 0
-              ? "🥄 ".repeat(Math.min(teaspoons, 8))
-              : "0 cucharaditas"}{" "}
-            ({teaspoons} tbsp)
-          </Text>
-        </View>
+        , de {name} contiene aprox.{" "}
+        <Text
+          style={{
+            fontWeight: "700",
+            color: "#FF3B30",
+          }}
+        >
+          {sugarPerPortion} g de azúcar.
+        </Text>
+      </Text>
+
+      <View style={styles.spoonRow}>
+        <Text style={styles.spoonText}>
+          Equivale a:{" "}
+          {teaspoons !== null && teaspoons > 0
+            ? "🥄 ".repeat(Math.min(teaspoons, 8))
+            : "0 cucharaditas"}{" "}
+          ({teaspoons ?? 0} tsp)
+        </Text>
       </View>
+    </>
+  ) : (
+    <Text style={styles.educationalText}>
+      No hay información disponible sobre la
+      porción de este producto para calcular su
+      equivalencia de azúcar.
+    </Text>
+  )}
+</View>
 
       {/* Sección Grasas Totales Desplegable */}
       <TouchableOpacity
