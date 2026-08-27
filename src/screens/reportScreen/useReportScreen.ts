@@ -9,10 +9,7 @@ export function useReportScreen() {
   const [showFatDetails, setShowFatDetails] = useState(false);
   const [showSaltDetails, setShowSaltDetails] = useState(false);
 
-  // console.log(
-  //   "Params recibidos en ReportScreen",
-  //   JSON.stringify(route.params, null, 2)
-  // );
+  // console.log('Params recibidos en ReportScreen', JSON.stringify(route.params, null, 2));
 
   const { product, source } = route.params || {};
 
