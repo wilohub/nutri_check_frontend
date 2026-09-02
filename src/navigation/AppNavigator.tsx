@@ -1,12 +1,14 @@
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { NavigationContainer } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, StyleSheet } from 'react-native';
 
-import ScanScreen from "../screens/ScanScreen";
+import ScanScreen from '../screens/ScanScreen';
 // import ReportScreen from "../screens/reportScreen/ReportScreen";
-import ReportScreen from "../screens/reportScreen/ReportScreen";
+import ReportScreen from '../screens/reportScreen/ReportScreen';
+import CreateProductScreen from '../screens/createProductScreen/CreateProductScreen';
+import OcrCaptureScreen from '../screens/OcrCaptureScreen';
 
 function HistoryScreenMock() {
   return (
@@ -24,6 +26,8 @@ function ScanStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ScanMain" component={ScanScreen} />
+      <Stack.Screen name="OcrCapture" component={OcrCaptureScreen} />
+      <Stack.Screen name="CreateProduct" component={CreateProductScreen} />
       <Stack.Screen name="Report" component={ReportScreen} />
     </Stack.Navigator>
   );
@@ -35,10 +39,10 @@ export default function AppNavigator() {
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#000000",
-          tabBarInactiveTintColor: "#8E8E93",
+          tabBarActiveTintColor: '#000000',
+          tabBarInactiveTintColor: '#8E8E93',
           tabBarStyle: {
-            backgroundColor: "#FFFFFF",
+            backgroundColor: '#FFFFFF',
             borderTopWidth: 0,
             elevation: 5,
             shadowOpacity: 0.1,
@@ -51,7 +55,7 @@ export default function AppNavigator() {
           name="Escáner"
           component={ScanStack}
           options={{
-            tabBarLabel: "Escanear",
+            tabBarLabel: 'Escanear',
             tabBarIcon: () => <Text>🔍</Text>,
           }}
         />
@@ -59,7 +63,7 @@ export default function AppNavigator() {
           name="Historial"
           component={HistoryScreenMock}
           options={{
-            tabBarLabel: "Historial",
+            tabBarLabel: 'Historial',
             tabBarIcon: () => <Text>📈</Text>,
           }}
         />
@@ -71,13 +75,13 @@ export default function AppNavigator() {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F9F9F9",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9F9F9',
   },
   title: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontWeight: '600',
+    color: '#1C1C1E',
   },
 });

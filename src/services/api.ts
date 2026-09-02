@@ -1,36 +1,27 @@
-import axios from "axios";
+import axios from 'axios';
 
-// Tu IP local fija de la red actual y el puerto de NestJS
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 5000,
+  timeout: 10000, // Incrementado para carga de imágenes
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 export const productService = {
-  /**
-   * Intento 1: Buscar el producto en la DB Local de NestJS
-   */
   scanProductLocal: async (barcode: string) => {
     try {
       const cleanBarcode = barcode.trim();
-      console.log(`barcode: ${cleanBarcode}`)
       const response = await api.get(`/products/scan/${cleanBarcode}`);
       return response.data;
     } catch (error: any) {
-      console.error("Error " + error.message)
       if (error.response) throw error.response.data;
-      throw new Error("Error al conectar con la DB Local");
+      throw new Error('Error al conectar con la DB Local');
     }
   },
 
-  /**
-   * Intento 2: Buscar el producto en la API externa de Open Food Facts (OFF)
-   */
   scanProductOFF: async (barcode: string) => {
     try {
       const cleanBarcode = barcode.trim();
@@ -38,7 +29,48 @@ export const productService = {
       return response.data;
     } catch (error: any) {
       if (error.response) throw error.response.data;
-      throw new Error("Error al conectar con Open Food Facts");
+      throw new Error('Error al conectar con Open Food Facts');
+    }
+  },
+
+  // Subir imagen capturada al OCR
+  processOcrImage: async (imageUri: string, barcode?: string) => {
+    try {
+      const formData = new FormData();
+      const filename = imageUri.split('/').pop() || 'label.jpg';
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+      formData.append('image', {
+        uri: imageUri,
+        name: filename,
+        type,
+      } as any);
+
+      if (barcode) {
+        formData.append('barcode', barcode.trim());
+      }
+
+      const response = await api.post('/ocr/process', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response) throw error.response.data;
+      throw new Error('Error al procesar la imagen con el servidor OCR');
+    }
+  },
+
+  // Persistir producto confirmado en DB Local
+  createLocalProduct: async (productData: any) => {
+    try {
+      const response = await api.post('/products', productData);
+      return response.data;
+    } catch (error: any) {
+      if (error.response) throw error.response.data;
+      throw new Error('Error al guardar el producto en la base de datos');
     }
   },
 };
