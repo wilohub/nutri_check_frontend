@@ -25,6 +25,8 @@ export default function ReportScreen() {
     hasServingInformation,
     sugarPerPortion,
     teaspoons,
+    hasFatInfo,
+    hasSaltInfo,
     showFatDetails,
     setShowFatDetails,
     showSaltDetails,
@@ -114,7 +116,7 @@ export default function ReportScreen() {
               <Text
                 style={{
                   fontWeight: '700',
-                  color: '#FF3B30',
+                  color: translateLevel(sugarLevel) === 'ALTO' ? '#FF3B30' : '#000000',
                 }}
               >
                 {sugarPerPortion} g de azúcar.
@@ -140,67 +142,73 @@ export default function ReportScreen() {
       </View>
 
       {/* Sección Grasas Totales Desplegable */}
-      <TouchableOpacity
-        style={styles.expandableCard}
-        onPress={() => setShowFatDetails(!showFatDetails)}
-      >
-        <View style={styles.expandableHeader}>
-          <Text style={styles.expandableTitle}>
-            🧈 Grasas Totales ({fat100} g / 100{quantityUnit})
-          </Text>
-          <Text style={styles.arrow}>{showFatDetails ? '▲' : '▼'}</Text>
-        </View>
-
-        {showFatDetails && (
-          <View style={styles.expandableContent}>
-            <Text style={styles.fatItem}>
-              🟢 <Text style={styles.bold}>Grasas monoinsaturadas:</Text> Principalmente ácido
-              oleico.
+      {hasFatInfo && (
+        <TouchableOpacity
+          style={styles.expandableCard}
+          onPress={() => setShowFatDetails(!showFatDetails)}
+        >
+          <View style={styles.expandableHeader}>
+            <Text style={styles.expandableTitle}>
+              🧈 Grasas Totales ({fat100} g / 100{quantityUnit})
             </Text>
-            <Text style={styles.fatItem}>
-              🟢 <Text style={styles.bold}>Grasas poliinsaturadas:</Text> Omega-6 y pequeñas
-              cantidades de Omega-3.
-            </Text>
-            <Text style={styles.fatItem}>
-              🟠 <Text style={styles.bold}>Grasas saturadas ({satFat100} g):</Text> Su consumo
-              excesivo eleva el colesterol LDL ("malo") y aumenta el riesgo cardiovascular.
-            </Text>
-            <Text style={styles.fatItem}>
-              ⚪ <Text style={styles.bold}>Grasas trans:</Text> Grasas dañinas que elevan el
-              colesterol malo y reducen el bueno, elevando el riesgo cardiovascular.
-            </Text>
+            <Text style={styles.arrow}>{showFatDetails ? '▲' : '▼'}</Text>
           </View>
-        )}
-      </TouchableOpacity>
+
+          {showFatDetails && (
+            <View style={styles.expandableContent}>
+              <Text style={styles.fatItem}>
+                🟢 <Text style={styles.bold}>Grasas monoinsaturadas:</Text> Principalmente ácido
+                oleico.
+              </Text>
+              <Text style={styles.fatItem}>
+                🟢 <Text style={styles.bold}>Grasas poliinsaturadas:</Text> Omega-6 y pequeñas
+                cantidades de Omega-3.
+              </Text>
+              <Text style={styles.fatItem}>
+                🟠 <Text style={styles.bold}>Grasas saturadas ({satFat100} g):</Text> Su consumo
+                excesivo eleva el colesterol LDL ("malo") y aumenta el riesgo cardiovascular.
+              </Text>
+              <Text style={styles.fatItem}>
+                ⚪ <Text style={styles.bold}>Grasas trans:</Text> Grasas dañinas que elevan el
+                colesterol malo y reducen el bueno, elevando el riesgo cardiovascular.
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      )}
 
       {/* Sección Sodio / Sal OMS */}
-      <TouchableOpacity
-        style={styles.expandableCard}
-        onPress={() => setShowSaltDetails(!showSaltDetails)}
-      >
-        <View style={styles.expandableHeader}>
-          <Text style={styles.expandableTitle}>🧂 Información de Sal y Sodio</Text>
-          <Text style={styles.arrow}>{showSaltDetails ? '▲' : '▼'}</Text>
-        </View>
-
-        {showSaltDetails && (
-          <View style={styles.expandableContent}>
-            <Text style={styles.infoSubtitle}>¿Qué necesitas saber?</Text>
-            <Text style={styles.bulletPoint}>
-              • Un alto consumo de sal (o sodio) puede provocar un aumento de la presión arterial y
-              el riesgo de enfermedades cardiovasculares.
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • Muchas personas con presión alta no lo saben, ya que no presenta síntomas previos.
-            </Text>
-            <Text style={styles.bulletPoint}>
-              • La mayoría de las personas consumen de 9 a 12 g diarios de sal, el doble del límite
-              recomendado (5 g/día según la OMS).
-            </Text>
-            <Text style={styles.sourceText}>Fuente: OMS (World Health Organization) / NHS UK</Text>
+      {hasSaltInfo && (
+        <TouchableOpacity
+          style={styles.expandableCard}
+          onPress={() => setShowSaltDetails(!showSaltDetails)}
+        >
+          <View style={styles.expandableHeader}>
+            <Text style={styles.expandableTitle}>🧂 Información de Sal y Sodio</Text>
+            <Text style={styles.arrow}>{showSaltDetails ? '▲' : '▼'}</Text>
           </View>
-        )}
-      </TouchableOpacity>
+
+          {showSaltDetails && (
+            <View style={styles.expandableContent}>
+              <Text style={styles.infoSubtitle}>¿Qué necesitas saber?</Text>
+              <Text style={styles.bulletPoint}>
+                • Un alto consumo de sal (o sodio) puede provocar un aumento de la presión arterial
+                y el riesgo de enfermedades cardiovasculares.
+              </Text>
+              <Text style={styles.bulletPoint}>
+                • Muchas personas con presión alta no lo saben, ya que no presenta síntomas previos.
+              </Text>
+              <Text style={styles.bulletPoint}>
+                • La mayoría de las personas consumen de 9 a 12 g diarios de sal, el doble del
+                límite recomendado (5 g/día según la OMS).
+              </Text>
+              <Text style={styles.sourceText}>
+                Fuente: OMS (World Health Organization) / NHS UK
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      )}
 
       {/* Botón Volver */}
       <TouchableOpacity style={styles.backButton} onPress={goBack}>

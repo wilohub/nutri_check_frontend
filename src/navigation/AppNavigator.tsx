@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { View, Text, StyleSheet } from 'react-native';
 
-import ScanScreen from '../screens/ScanScreen';
+import ScanScreen from '../screens/scanScreen/ScanScreen';
 // import ReportScreen from "../screens/reportScreen/ReportScreen";
 import ReportScreen from '../screens/reportScreen/ReportScreen';
 import CreateProductScreen from '../screens/createProductScreen/CreateProductScreen';

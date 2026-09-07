@@ -58,7 +58,7 @@ export default function OcrCaptureScreen() {
   return (
     <View style={styles.container}>
       {/* Componente Cámara sin hijos */}
-      <CameraView style={StyleSheet.absoluteFillObject} ref={cameraRef} />
+      <CameraView style={StyleSheet.absoluteFill} ref={cameraRef} />
 
       {/* Capa de interfaz gráfica superpuesta mediante absolute positioning */}
       <View style={styles.overlay} pointerEvents="box-none">
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#007AFF', padding: 12, borderRadius: 8 },
   buttonText: { color: '#FFF', fontWeight: '600' },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 50,

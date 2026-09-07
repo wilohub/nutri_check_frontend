@@ -72,6 +72,10 @@ export function useReportScreen() {
   const fat100 = nutriments?.totalFat?.value ?? 0;
   const satFat100 = nutriments?.saturatedFat?.value ?? 0;
   const salt100 = nutriments?.salt?.value ?? 0;
+  const sodium100 = nutriments?.sodium?.value ?? 0;
+
+  const hasFatInfo = Number(fat100) > 0 || Number(satFat100) > 0;
+  const hasSaltInfo = Number(salt100) > 0 || Number(sodium100) > 0;
 
   // ---------------------------------------------------------
   // Semáforo
@@ -218,6 +222,8 @@ export function useReportScreen() {
     hasServingInformation,
     sugarPerPortion,
     teaspoons,
+    hasFatInfo,
+    hasSaltInfo,
     showFatDetails,
     setShowFatDetails,
     showSaltDetails,
