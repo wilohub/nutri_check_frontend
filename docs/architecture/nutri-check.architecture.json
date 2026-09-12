@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura General de Nutri-Check",
+    "output": "nutri-check-architecture.html",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "scan-flow",
+        "label": "Flujo de Escaneo de Alimentos",
+        "focus": [
+          "client_app",
+          "api_backend",
+          "products_service",
+          "postgres_db",
+          "off_api"
+        ],
+        "note": "Consulta de código de barras en DB local con fallback automático a Open Food Facts."
+      },
+      {
+        "id": "ocr-flow",
+        "label": "Procesamiento OCR de Etiquetas",
+        "focus": [
+          "client_app",
+          "api_backend",
+          "ocr_module",
+          "ocr_cloud"
+        ],
+        "note": "Captura y extracción de tabla nutricional mediante servicio OCR en la nube."
+      },
+      {
+        "id": "audit-flow",
+        "label": "Auditoría y Reportes",
+        "focus": [
+          "api_backend",
+          "reports_service",
+          "google_sheets"
+        ],
+        "note": "Telemetría y registro asíncrono de escaneos en Google Sheets."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "client_app",
+      "type": "frontend",
+      "label": "App Nutri-Check",
+      "sublabel": "React Native & Expo",
+      "brand": "react",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "google_sheets",
+      "type": "cloud",
+      "label": "Google Sheets API",
+      "sublabel": "Planilla de Auditoría",
+      "brand": "google-cloud",
+      "pos": [
+        40,
+        340
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "ocr_module",
+      "type": "backend",
+      "label": "Módulo OCR",
+      "sublabel": "Extractor Nutricional",
+      "pos": [
+        280,
+        60
+      ],
+      "size": [
+        165,
+        64
+      ]
+    },
+    {
+      "id": "api_backend",
+      "type": "backend",
+      "label": "API Gateway NestJS",
+      "sublabel": "Controladores REST",
+      "pos": [
+        280,
+        200
+      ],
+      "size": [
+        165,
+        64
+      ]
+    },
+    {
+      "id": "reports_service",
+      "type": "backend",
+      "label": "Módulo de Reportes",
+      "sublabel": "Auditoría Asíncrona",
+      "pos": [
+        280,
+        340
+      ],
+      "size": [
+        165,
+        64
+      ]
+    },
+    {
+      "id": "products_service",
+      "type": "backend",
+      "label": "Servicio de Productos",
+      "sublabel": "Semáforo Nutricional",
+      "pos": [
+        530,
+        200
+      ],
+      "size": [
+        170,
+        64
+      ]
+    },
+    {
+      "id": "ocr_cloud",
+      "type": "external",
+      "label": "OCR.space API",
+      "sublabel": "Motor OCR en la Nube",
+      "pos": [
+        780,
+        60
+      ],
+      "size": [
+        165,
+        64
+      ]
+    },
+    {
+      "id": "postgres_db",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "Prisma ORM",
+      "brand": "postgresql",
+      "pos": [
+        780,
+        200
+      ],
+      "size": [
+        165,
+        64
+      ]
+    },
+    {
+      "id": "off_api",
+      "type": "external",
+      "label": "Open Food Facts",
+      "sublabel": "Catálogo Global REST",
+      "pos": [
+        780,
+        340
+      ],
+      "size": [
+        165,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Backend Nutri-Check (NestJS Core)",
+      "wraps": [
+        "api_backend",
+        "ocr_module",
+        "products_service",
+        "reports_service"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-to-api",
+      "from": "client_app",
+      "to": "api_backend",
+      "label": "REST / HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-ocr",
+      "from": "api_backend",
+      "to": "ocr_module",
+      "label": "Imagen Etiqueta",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "api-to-products",
+      "from": "api_backend",
+      "to": "products_service",
+      "label": "Consultas / Alta",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-reports",
+      "from": "api_backend",
+      "to": "reports_service",
+      "label": "Audit Log",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 24
+    },
+    {
+      "id": "ocr-to-cloud",
+      "from": "ocr_module",
+      "to": "ocr_cloud",
+      "label": "Parseo OCR"
+    },
+    {
+      "id": "products-to-db",
+      "from": "products_service",
+      "to": "postgres_db",
+      "label": "SQL / Prisma",
+      "variant": "emphasis"
+    },
+    {
+      "id": "products-to-off",
+      "from": "products_service",
+      "to": "off_api",
+      "label": "Fallback Barcode",
+      "variant": "dashed"
+    },
+    {
+      "id": "reports-to-sheets",
+      "from": "reports_service",
+      "to": "google_sheets",
+      "label": "Sync JWT"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Cliente Móvil",
+      "items": [
+        "React Native & Expo con escáner de códigos de barras y captura fotográfica OCR",
+        "Visualización interactiva del semáforo nutricional y recomendaciones al usuario"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Backend NestJS",
+      "items": [
+        "Módulos desacoplados para catálogo, evaluación y extracción OCR de etiquetas",
+        "Estrategia híbrida: persistencia local relacional con fallback a Open Food Facts"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Datos e Integraciones",
+      "items": [
+        "Base de datos PostgreSQL administrada mediante esquema y cliente Prisma ORM",
+        "Integración externa con servicios en la nube: OCR.space y Google Sheets API"
+      ]
+    }
+  ]
+}
