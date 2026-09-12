@@ -24,12 +24,18 @@ export default function CreateProductScreen() {
     setQuantityDisplay,
     energyKcal,
     setEnergyKcal,
+    carbohydrates,
+    setCarbohydrates,
     sugars,
     setSugars,
+    proteins,
+    setProteins,
     totalFat,
     setTotalFat,
     saturatedFat,
     setSaturatedFat,
+    fiber,
+    setFiber,
     salt,
     setSalt,
     sodium,
@@ -104,11 +110,27 @@ export default function CreateProductScreen() {
           keyboardType="decimal-pad"
         />
 
+        <Text style={styles.label}>Carbohidratos (g)</Text>
+        <TextInput
+          style={styles.input}
+          value={carbohydrates}
+          onChangeText={setCarbohydrates}
+          keyboardType="decimal-pad"
+        />
+
         <Text style={styles.label}>Azúcares (g)</Text>
         <TextInput
           style={styles.input}
           value={sugars}
           onChangeText={setSugars}
+          keyboardType="decimal-pad"
+        />
+
+        <Text style={styles.label}>Proteínas (g)</Text>
+        <TextInput
+          style={styles.input}
+          value={proteins}
+          onChangeText={setProteins}
           keyboardType="decimal-pad"
         />
 
@@ -125,6 +147,14 @@ export default function CreateProductScreen() {
           style={styles.input}
           value={saturatedFat}
           onChangeText={setSaturatedFat}
+          keyboardType="decimal-pad"
+        />
+
+        <Text style={styles.label}>Fibra (g)</Text>
+        <TextInput
+          style={styles.input}
+          value={fiber}
+          onChangeText={setFiber}
           keyboardType="decimal-pad"
         />
 

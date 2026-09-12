@@ -16,7 +16,7 @@ export function useCreateProductScreen() {
   const [ingredients, setIngredients] = useState(ocrData?.ingredients || '');
   const [quantityDisplay, setQuantityDisplay] = useState(ocrData?.quantityData?.display || '');
 
-  // Valores Nutricionales por 100g/ml
+  // Valores Nutricionales (los 9 campos requeridos por el backend)
   const [energyKcal, setEnergyKcal] = useState(
     String(ocrData?.nutritionalData?.energyKcal?.value ?? ''),
   );
@@ -29,10 +29,24 @@ export function useCreateProductScreen() {
   const [saturatedFat, setSaturatedFat] = useState(
     String(ocrData?.nutritionalData?.saturatedFat?.value ?? ''),
   );
+  const [fiber, setFiber] = useState(String(ocrData?.nutritionalData?.fiber?.value ?? ''));
   const [salt, setSalt] = useState(String(ocrData?.nutritionalData?.salt?.value ?? ''));
   const [sodium, setSodium] = useState(String(ocrData?.nutritionalData?.sodium?.value ?? ''));
 
   const [saving, setSaving] = useState(false);
+
+  const formatErrorMessage = (error: any): string => {
+    if (!error) return 'Ocurrió un error inesperado.';
+    const rawMessage = error.message || error.response?.data?.message;
+
+    if (Array.isArray(rawMessage)) {
+      return rawMessage.join('\n• ');
+    }
+    if (typeof rawMessage === 'string') {
+      return rawMessage;
+    }
+    return 'No se pudo procesar la solicitud.';
+  };
 
   const handleSaveProduct = async () => {
     if (!barcodeInput.trim()) {
@@ -47,14 +61,12 @@ export function useCreateProductScreen() {
     setSaving(true);
 
     try {
+      // Estructura alineada 1:1 con CreateProductDto
       const payload = {
         barcode: barcodeInput.trim(),
         name: name.trim(),
         brand: brand.trim() || 'Genérica',
         ingredients: ingredients.trim() || 'No especificados',
-        quantityData: {
-          display: quantityDisplay.trim() || null,
-        },
         nutritionalData: {
           energyKcal: Number(energyKcal) || 0,
           carbohydrates: Number(carbohydrates) || 0,
@@ -62,6 +74,7 @@ export function useCreateProductScreen() {
           proteins: Number(proteins) || 0,
           totalFat: Number(totalFat) || 0,
           saturatedFat: Number(saturatedFat) || 0,
+          fiber: Number(fiber) || 0,
           salt: Number(salt) || 0,
           sodium: Number(sodium) || 0,
         },
@@ -81,7 +94,8 @@ export function useCreateProductScreen() {
         },
       ]);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo guardar el producto.');
+      const errorMessage = formatErrorMessage(error);
+      Alert.alert('Error de Validación', errorMessage);
     } finally {
       setSaving(false);
     }
@@ -110,6 +124,8 @@ export function useCreateProductScreen() {
     setTotalFat,
     saturatedFat,
     setSaturatedFat,
+    fiber,
+    setFiber,
     salt,
     setSalt,
     sodium,

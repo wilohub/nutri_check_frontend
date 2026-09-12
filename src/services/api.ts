@@ -4,11 +4,22 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 10000, // Incrementado para carga de imágenes
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+/**
+ * Función auxiliar para normalizar errores de Axios/NestJS a una estructura estandarizada
+ */
+const handleApiError = (error: any, defaultMessage: string) => {
+  if (error.response?.data) {
+    // Retornamos la respuesta del backend manteniendo sus propiedades
+    throw error.response.data;
+  }
+  throw new Error(defaultMessage);
+};
 
 export const productService = {
   scanProductLocal: async (barcode: string) => {
@@ -17,8 +28,7 @@ export const productService = {
       const response = await api.get(`/products/scan/${cleanBarcode}`);
       return response.data;
     } catch (error: any) {
-      if (error.response) throw error.response.data;
-      throw new Error('Error al conectar con la DB Local');
+      handleApiError(error, 'Error al conectar con la DB Local');
     }
   },
 
@@ -28,12 +38,10 @@ export const productService = {
       const response = await api.get(`/open-food-facts/${cleanBarcode}`);
       return response.data;
     } catch (error: any) {
-      if (error.response) throw error.response.data;
-      throw new Error('Error al conectar con Open Food Facts');
+      handleApiError(error, 'Error al conectar con Open Food Facts');
     }
   },
 
-  // Subir imagen capturada al OCR
   processOcrImage: async (imageUri: string, barcode?: string) => {
     try {
       const formData = new FormData();
@@ -58,19 +66,16 @@ export const productService = {
       });
       return response.data;
     } catch (error: any) {
-      if (error.response) throw error.response.data;
-      throw new Error('Error al procesar la imagen con el servidor OCR');
+      handleApiError(error, 'Error al procesar la imagen con el servidor OCR');
     }
   },
 
-  // Persistir producto confirmado en DB Local
   createLocalProduct: async (productData: any) => {
     try {
       const response = await api.post('/products', productData);
       return response.data;
     } catch (error: any) {
-      if (error.response) throw error.response.data;
-      throw new Error('Error al guardar el producto en la base de datos');
+      handleApiError(error, 'Error al guardar el producto en la base de datos');
     }
   },
 };
