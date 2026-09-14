@@ -30,7 +30,83 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+  saveButtonDisabled: {
+    opacity: 0.65,
+  },
+  saveButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
   saveButtonText: { color: '#FFFFFF', fontSize: 15, fontWeight: '700' },
   cancelButton: { paddingVertical: 12, alignItems: 'center' },
   cancelButtonText: { color: '#FF3B30', fontSize: 14, fontWeight: '600' },
+
+  // Selector de imagen de producto
+  imagePickerContainer: {
+    borderWidth: 1.5,
+    borderColor: '#C7C7CC',
+    borderStyle: 'dashed',
+    borderRadius: 12,
+    backgroundColor: '#F9F9FB',
+    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  imagePickerPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imagePickerIcon: {
+    fontSize: 32,
+    marginBottom: 6,
+  },
+  imagePickerText: {
+    fontSize: 13,
+    color: '#8E8E93',
+    fontWeight: '500',
+  },
+  imagePreviewContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+  },
+  imagePreview: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeImageButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  changePhotoBadge: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  changePhotoText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '600',
+  },
 });

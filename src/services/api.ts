@@ -4,16 +4,13 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  timeout: 15000, // Adecuado para subida de imágenes a Cloudinary
 });
 
 /**
  * Función auxiliar para normalizar errores de Axios/NestJS a una estructura estandarizada
  */
-const handleApiError = (error: any, defaultMessage: string) => {
+const handleApiError = (error: any, defaultMessage: string): never => {
   if (error.response?.data) {
     // Retornamos la respuesta del backend manteniendo sus propiedades
     throw error.response.data;
@@ -59,23 +56,30 @@ export const productService = {
         formData.append('barcode', barcode.trim());
       }
 
-      const response = await api.post('/ocr/process', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // NO configurar Content-Type manual para que Axios calcule el boundary automáticamente
+      const response = await api.post('/ocr/process', formData);
       return response.data;
     } catch (error: any) {
       handleApiError(error, 'Error al procesar la imagen con el servidor OCR');
     }
   },
 
-  createLocalProduct: async (productData: any) => {
+  createLocalProduct: async (productData: FormData | any) => {
     try {
       const response = await api.post('/products', productData);
       return response.data;
     } catch (error: any) {
       handleApiError(error, 'Error al guardar el producto en la base de datos');
+    }
+  },
+
+  updateProductImage: async (barcode: string, formData: FormData) => {
+    try {
+      const cleanBarcode = barcode.trim();
+      const response = await api.patch(`/products/${cleanBarcode}`, formData);
+      return response.data;
+    } catch (error: any) {
+      handleApiError(error, 'Error al actualizar la imagen del producto');
     }
   },
 };

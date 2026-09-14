@@ -6,12 +6,16 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useCreateProductScreen } from './useCreateProductScreen';
 import { styles } from './CreateProductScreen.styles';
 
 export default function CreateProductScreen() {
   const {
+    imageUri,
+    selectImagePrompt,
+    removeImage,
     barcodeInput,
     setBarcodeInput,
     name,
@@ -55,6 +59,36 @@ export default function CreateProductScreen() {
       {/* Información General */}
       <View style={styles.card}>
         <Text style={styles.sectionHeader}>Información Básica</Text>
+
+        {/* Recuadro interactivo de Foto del Producto */}
+        <Text style={styles.label}>Foto del Producto (Opcional)</Text>
+        <TouchableOpacity
+          style={styles.imagePickerContainer}
+          onPress={selectImagePrompt}
+          activeOpacity={0.8}
+        >
+          {imageUri ? (
+            <View style={styles.imagePreviewContainer}>
+              <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode="cover" />
+              <TouchableOpacity
+                style={styles.removeImageButton}
+                onPress={removeImage}
+                activeOpacity={0.7}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.removeImageButtonText}>✕</Text>
+              </TouchableOpacity>
+              <View style={styles.changePhotoBadge}>
+                <Text style={styles.changePhotoText}>Cambiar foto 📷</Text>
+              </View>
+            </View>
+          ) : (
+            <View style={styles.imagePickerPlaceholder}>
+              <Text style={styles.imagePickerIcon}>📷</Text>
+              <Text style={styles.imagePickerText}>Foto del producto (opcional)</Text>
+            </View>
+          )}
+        </TouchableOpacity>
 
         <Text style={styles.label}>Código de Barras *</Text>
         <TextInput
@@ -176,9 +210,17 @@ export default function CreateProductScreen() {
       </View>
 
       {/* Acciones */}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSaveProduct} disabled={saving}>
+      <TouchableOpacity
+        style={[styles.saveButton, saving && styles.saveButtonDisabled]}
+        onPress={handleSaveProduct}
+        disabled={saving}
+        activeOpacity={0.8}
+      >
         {saving ? (
-          <ActivityIndicator color="#FFF" />
+          <View style={styles.saveButtonContent}>
+            <ActivityIndicator color="#FFF" size="small" />
+            <Text style={styles.saveButtonText}>Guardando producto...</Text>
+          </View>
         ) : (
           <Text style={styles.saveButtonText}>Guardar Producto 💾</Text>
         )}

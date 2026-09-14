@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Alert } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { productService } from '../../services/api';
 
 export function useCreateProductScreen() {
@@ -8,6 +9,9 @@ export function useCreateProductScreen() {
   const navigation = useNavigation<any>();
 
   const { ocrData, barcode } = route.params || {};
+
+  // Estado de imagen del producto
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   // Estados del Formulario precargados desde OCR
   const [barcodeInput, setBarcodeInput] = useState(barcode || ocrData?.barcode || '');
@@ -48,6 +52,74 @@ export function useCreateProductScreen() {
     return 'No se pudo procesar la solicitud.';
   };
 
+  const pickImageFromCamera = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permiso denegado',
+          'Se requiere acceso a la cámara para tomar la foto del producto.',
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      Alert.alert('Error', 'No se pudo abrir la cámara: ' + (error.message || error));
+    }
+  };
+
+  const pickImageFromGallery = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permiso denegado',
+          'Se requiere acceso a la galería para seleccionar la foto del producto.',
+        );
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setImageUri(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      Alert.alert('Error', 'No se pudo abrir la galería: ' + (error.message || error));
+    }
+  };
+
+  const selectImagePrompt = () => {
+    Alert.alert(
+      'Foto del Producto',
+      'Elige el origen de la imagen:',
+      [
+        { text: 'Tomar Foto con Cámara', onPress: pickImageFromCamera },
+        { text: 'Elegir de Galería', onPress: pickImageFromGallery },
+        { text: 'Cancelar', style: 'cancel' },
+      ],
+      { cancelable: true },
+    );
+  };
+
+  const removeImage = () => {
+    setImageUri(null);
+  };
+
   const handleSaveProduct = async () => {
     if (!barcodeInput.trim()) {
       Alert.alert('Campo Requerido', 'El código de barras es obligatorio.');
@@ -61,26 +133,43 @@ export function useCreateProductScreen() {
     setSaving(true);
 
     try {
-      // Estructura alineada 1:1 con CreateProductDto
-      const payload = {
-        barcode: barcodeInput.trim(),
-        name: name.trim(),
-        brand: brand.trim() || 'Genérica',
-        ingredients: ingredients.trim() || 'No especificados',
-        nutritionalData: {
-          energyKcal: Number(energyKcal) || 0,
-          carbohydrates: Number(carbohydrates) || 0,
-          sugars: Number(sugars) || 0,
-          proteins: Number(proteins) || 0,
-          totalFat: Number(totalFat) || 0,
-          saturatedFat: Number(saturatedFat) || 0,
-          fiber: Number(fiber) || 0,
-          salt: Number(salt) || 0,
-          sodium: Number(sodium) || 0,
-        },
-      };
+      const barcodeClean = barcodeInput.trim();
+      const formData = new FormData();
 
-      const newProduct = await productService.createLocalProduct(payload);
+      // Campos simples
+      formData.append('barcode', barcodeClean);
+      formData.append('name', name.trim());
+      formData.append('brand', brand.trim() || 'Genérica');
+      formData.append('ingredients', ingredients.trim() || 'No especificados');
+
+      // IMPORTANTE: Convierte el objeto JavaScript nutritionalData a string mediante JSON.stringify(nutritionalData)
+      const nutritionalData = {
+        energyKcal: Number(energyKcal) || 0,
+        carbohydrates: Number(carbohydrates) || 0,
+        sugars: Number(sugars) || 0,
+        proteins: Number(proteins) || 0,
+        totalFat: Number(totalFat) || 0,
+        saturatedFat: Number(saturatedFat) || 0,
+        fiber: Number(fiber) || 0,
+        salt: Number(salt) || 0,
+        sodium: Number(sodium) || 0,
+      };
+      formData.append('nutritionalData', JSON.stringify(nutritionalData));
+
+      // Si existe una imagen local seleccionada, ajustarla al formato esperado por FormData en React Native
+      if (imageUri) {
+        const filename = imageUri.split('/').pop() || `product_${barcodeClean}.jpg`;
+        const match = /\.(\w+)$/.exec(filename);
+        const type = match ? `image/${match[1].toLowerCase()}` : 'image/jpeg';
+
+        formData.append('file', {
+          uri: imageUri,
+          name: `product_${barcodeClean}.jpg`,
+          type,
+        } as any);
+      }
+
+      const newProduct = await productService.createLocalProduct(formData);
 
       Alert.alert('¡Éxito!', 'Producto guardado correctamente en la DB.', [
         {
@@ -102,6 +191,9 @@ export function useCreateProductScreen() {
   };
 
   return {
+    imageUri,
+    selectImagePrompt,
+    removeImage,
     barcodeInput,
     setBarcodeInput,
     name,

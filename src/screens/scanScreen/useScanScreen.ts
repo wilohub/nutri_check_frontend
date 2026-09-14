@@ -45,8 +45,8 @@ export function useScanScreen() {
         });
       } catch (offError: any) {
         Alert.alert(
-          'Producto no registrado',
-          'Este alimento no existe en nuestros servidores ni en OFF.\n\n¿Deseas digitalizarlo con OCR?',
+          '🤔 ¿No lo encontramos?',
+          'Este producto aún no está en nuestra base de datos.\n\n¿Quieres agregarlo tomando una foto de la etiqueta nutricional?',
           [
             { text: 'Cancelar', style: 'cancel', onPress: () => setScanned(false) },
             {

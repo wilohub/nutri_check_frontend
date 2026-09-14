@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { useReportScreen } from './useReportScreen';
 import { styles } from './ReportScreen.styles';
 
@@ -10,6 +10,8 @@ export default function ReportScreen() {
     brand,
     cantidad,
     imageUrl,
+    isUploadingImage,
+    openImagePickerPrompt,
     quantityNum,
     quantityUnit,
     sugars100,
@@ -44,13 +46,34 @@ export default function ReportScreen() {
           {source === 'local' ? '🟢 Base de Datos Nutri-Check' : '🔵 Open Food Facts'}
         </Text>
         <View style={styles.productRow}>
-          {imageUrl ? (
-            <Image source={{ uri: imageUrl }} style={styles.productImage} resizeMode="contain" />
-          ) : (
-            <View style={[styles.productImage, styles.imagePlaceholder]}>
-              <Text style={{ fontSize: 24 }}>📦</Text>
-            </View>
-          )}
+          <TouchableOpacity
+            style={styles.productImageWrapper}
+            onPress={openImagePickerPrompt}
+            activeOpacity={0.8}
+            disabled={isUploadingImage}
+          >
+            {imageUrl ? (
+              <Image source={{ uri: imageUrl }} style={styles.productImage} resizeMode="contain" />
+            ) : (
+              <View style={[styles.productImage, styles.imagePlaceholder]}>
+                <Text style={{ fontSize: 24 }}>📦</Text>
+              </View>
+            )}
+
+            {/* Insignia/Badge circular de cámara cuando no hay imagen */}
+            {!imageUrl && (
+              <View style={styles.cameraBadge}>
+                <Text style={styles.cameraBadgeIcon}>📷</Text>
+              </View>
+            )}
+
+            {/* Overlay con spinner de carga durante la subida a Cloudinary */}
+            {isUploadingImage && (
+              <View style={styles.imageLoadingOverlay}>
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              </View>
+            )}
+          </TouchableOpacity>
           <View style={styles.productInfo}>
             <Text style={styles.productTitle}>{name}</Text>
             <Text style={styles.productBrand}>Marca: {brand}</Text>
